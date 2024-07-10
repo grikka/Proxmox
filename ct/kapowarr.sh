@@ -60,32 +60,10 @@ function default_settings() {
   echo_default
 }
 
-function update_script() {
-  header_info
-  if [[ ! -f /etc/apt/sources.list.d/kapowarr.list ]]; then msg_error "No ${APP} Installation Found!"; exit; fi
-  msg_info "Updating ${APP} LXC"
-  apt-get update &>/dev/null
-  apt-get -y upgrade &>/dev/null
-  msg_ok "Updated Successfully"
-  exit
-}
-
 start
 build_container
 description
 
-msg_info "Setting up ${APP} Repository"
-wget -qO- https://apt.sonarr.tv/pub.key | apt-key add - >/dev/null
-echo "deb https://apt.sonarr.tv/debian buster main" | tee /etc/apt/sources.list.d/kapowarr.list >/dev/null
-msg_ok "Added ${APP} Repository"
-
-msg_info "Installing ${APP}"
-apt-get update &>/dev/null
-apt-get install -y kapowarr &>/dev/null
-systemctl enable --now kapowarr.service &>/dev/null
-msg_ok "Installed ${APP}"
-
-description
-
-msg_info "${APP} should be reachable by going to the following URL."
-echo -e "${BL}http://${IP}:5656${CL} \n"
+msg_ok "Completed Successfully!\n"
+echo -e "${APP} should be reachable by going to the following URL.
+         ${BL}http://${IP}:5656${CL} \n"
