@@ -12,33 +12,38 @@ network_check
 update_os
 
 # Update and install dependencies
-echo "Updating package list and installing dependencies..."
-apt-get update
-apt-get install -y curl sudo
+msg_info "Updating package list and installing dependencies..."
+$STD apt-get update
+$STD apt-get install -y curl sudo
+msg_ok "Installed Dependencies"
 
 # Install Docker
-echo "Installing Docker..."
-curl -fsSL https://get.docker.com -o get-docker.sh
-sh get-docker.sh
+msg_info "Installing Docker..."
+$STD curl -fsSL https://get.docker.com -o get-docker.sh
+$STD sh get-docker.sh
+msg_ok "Installed Docker"
 
 # Create a Docker group and add the current user
-echo "Configuring Docker group..."
-groupadd docker
-usermod -aG docker $USER
-newgrp docker
+msg_info "Configuring Docker group..."
+$STD groupadd docker
+$STD usermod -aG docker $USER
+$STD newgrp docker
+msg_ok "Docker Configured"
 
-# Create a directory for Kapowarr
-echo "Creating directory for Kapowarr..."
+
+# Installing Kapowarr
+msg_info "Creating directory for Kapowarr..."
 mkdir -p /opt/kapowarr
 cd /opt/kapowarr
-
-# Download and configure Kapowarr Docker Compose file
-echo "Downloading Docker Compose file for Kapowarr..."
 curl -o docker-compose.yml https://raw.githubusercontent.com/Casvt/Kapowarr/master/docker-compose.yml
-
-# Start Kapowarr using Docker Compose
-echo "Starting Kapowarr..."
 docker-compose up -d
+msg_ok "Kapowarr Configured"
 
-# Completion message
-echo "Kapowarr installation is complete. You can access Kapowarr on port 8585."
+motd_ssh
+customize
+
+msg_info "Cleaning up"
+rm -rf Kapowarr.master.*.tar.gz
+$STD apt-get -y autoremove
+$STD apt-get -y autoclean
+msg_ok "Cleaned"
